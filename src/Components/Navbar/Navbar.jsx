@@ -1,6 +1,15 @@
 import { Link, NavLink } from "react-router-dom";
+import user2 from "../../assets/user.jpg";
+import useAuth from "../../Hooks/useAuth";
 
 const Navbar = () => {
+  const { user, logOut } = useAuth();
+
+  const handleLogout = () => {
+    logOut()
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  };
   const navLinks = (
     <>
       <li className="mr-2">
@@ -45,20 +54,24 @@ const Navbar = () => {
           Login
         </NavLink>
       </li>
-      <li className="mr-2">
-        <NavLink
-          to="/blog"
-          className={({ isActive, isPending }) =>
-            isPending
-              ? "pending"
-              : isActive
-              ? "bg-custom-color text-white"
-              : " hover:border-custom-color hover:border hover:bg-white"
-          }
-        >
-          Blog
-        </NavLink>
-      </li>
+      {user?.email && (
+        <>
+          <li>
+            <NavLink
+              to="/dashboard/task-zone"
+              className={({ isActive, isPending }) =>
+                isPending
+                  ? "pending"
+                  : isActive
+                  ? "bg-custom-color text-white"
+                  : " hover:border-custom-color hover:border hover:bg-white"
+              }
+            >
+              Task DashBoard
+            </NavLink>
+          </li>
+        </>
+      )}
     </>
   );
   return (
@@ -90,14 +103,23 @@ const Navbar = () => {
             </ul>
           </div>
           <div>
-            <Link to="/"></Link>
+            <Link to="/">
+              <h1 className="text-white text-3xl">Neo Task Management</h1>
+            </Link>
           </div>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">{navLinks}</ul>
         </div>
         <div className="navbar-end">
-          <a className="btn">Button</a>
+          {user?.email && (
+            <>
+              <button onClick={handleLogout} className="btn">
+                Log Out
+              </button>
+              <img className="w-[50px] h-[50px] lg:ml-2" src={user2} alt="" />
+            </>
+          )}
         </div>
       </div>
     </div>

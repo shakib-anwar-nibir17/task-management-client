@@ -1,22 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../../Hooks/useAuth";
+import Swal from "sweetalert2";
 
 const Login = () => {
+  const { userSignIn } = useAuth();
+  const navigate = useNavigate();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log("hello");
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    userSignIn(email, password)
+      .then((result) => {
+        console.log(result);
+        Swal.fire({
+          title: "Congrats",
+          text: "Login Successful",
+          icon: "success",
+        });
+        navigate("/");
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <div className="rounded-md mx-auto mt-10 w-1/3 border-2 border-[#D0D0D0]">
-      <h2 className="text-4xl font-bold mt-12 text-center">Sign Up</h2>
-      <form className="card-body">
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Your Name</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Your name"
-            className="input input-bordered"
-            required
-          />
-        </div>
+      <h2 className="text-4xl font-bold mt-12 text-center">Log In</h2>
+      <form onSubmit={handleLogin} className="card-body">
         <div className="form-control">
           <label className="label">
             <span className="label-text">Email</span>
@@ -42,14 +52,16 @@ const Login = () => {
           />
         </div>
         <div className="form-control mt-6">
-          <button className="btn bg-custom-color text-white">Sign Up</button>
+          <button className="btn bg-[#fed766] text-black font-bold hover:bg-black hover:text-white">
+            Login
+          </button>
         </div>
       </form>
 
       <p className="text-center font-medium mt-8 mb-10">
-        Already have an account?
-        <span className="text-custom-color ml-2">
-          <Link to="/login">Sign In</Link>
+        Do not have an account?
+        <span className="text-sky-400 ml-2">
+          <Link to="/register">Register</Link>
         </span>
       </p>
     </div>
